@@ -5,6 +5,8 @@ import Products from "../components/Products";
 import Newsletter from "../components/Newsletter";
 import Footer from "../components/Footer";
 import { mobile } from "../responsive";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const Container = styled.div``;
 
@@ -50,18 +52,17 @@ const ProductList = () => {
     });
   };
   
+  
   return (
     <Container>
       <Navbar />
       <Announcement />
-      <Title>Dresses</Title>
+      <Title>{cat}</Title>
       <FilterContainer>
         <Filter>
           <FilterText>Filter Products:</FilterText>
           <Select name="color" onChange={handleFilters}>
-            <Option disabled>
-              Color
-            </Option>
+            <Option disabled> Color </Option>
             <Option>White</Option>
             <Option>Black</Option>
             <Option>Red</Option>
@@ -73,9 +74,9 @@ const ProductList = () => {
             <Option disabled>
               Size
             </Option>
-            <Option>XS</Option>
+            <Option >XS</Option>
             <Option>S</Option>
-            <Option>M</Option>
+            <Option >M</Option>
             <Option>L</Option>
             <Option>XL</Option>
           </Select>
