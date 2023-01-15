@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import {Link} from "react-router-dom";
+import {logout} from "../redux/userRedux"
 
 const Container = styled.div`
   height: 60px;
@@ -72,6 +73,10 @@ const Navbar = () => {
   const quantity = useSelector(state=>state.cart.quantity)
   console.log(quantity)
 
+  const handleClick = () => {
+dispatchEvent(logout())
+window.location = "/"
+  }
   return (
     <Container>
       <Wrapper>
@@ -86,7 +91,9 @@ const Navbar = () => {
           <Logo>The Foley Shop</Logo>
         </Center>
         <Right>
-          <MenuItem>REGISTER</MenuItem>
+        
+        <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
+        <MenuItem>REGISTER</MenuItem>
           <MenuItem>SIGN IN</MenuItem>
           <Link to="/cart">
           <MenuItem>
