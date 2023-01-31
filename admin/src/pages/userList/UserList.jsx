@@ -3,10 +3,36 @@ import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
 import { userRows } from "../../dummyData";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from 'react-redux';
+import { publicRequest, userRequest } from '../../requestMethods';
+
+
+import { 
+  addUserStart, 
+  addUserSuccess, 
+  addUserFailure  
+ } from "../../redux/userListRedux";
+
 
 export default function UserList() {
-  const [data, setData] = useState(userRows);
+  const dispatch = useDispatch();
+  const [data, setData] = useState([]);
+
+
+  useEffect(()=>{
+    const addUsers = async()=> {
+      dispatch(addUserStart())
+      try{
+         const res = await userRequest.get("/users");
+         dispatch(addUserSuccess(res.data))         
+         setData(res.data)
+      } catch(e){
+        dispatch(addUserFailure())
+      }
+    }
+    addUsers()
+  },[])
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
@@ -21,7 +47,7 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <div className="userListUser">
-            <img className="userListImg" src={params.row.avatar} alt="" />
+            <img className="userListImg" src={params.row.avatar || 'https://media.istockphoto.com/id/1131164548/vector/avatar-5.jpg?s=612x612&w=0&k=20&c=CK49ShLJwDxE4kiroCR42kimTuuhvuo2FH5y_6aSgEo='} alt="" />
             {params.row.username}
           </div>
         );
@@ -45,7 +71,7 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/user/" + params.row.id}>
+            <Link to={"/user/" + params.row._id}>
               <button className="userListEdit">Edit</button>
             </Link>
             <DeleteOutline
@@ -62,6 +88,7 @@ export default function UserList() {
     <div className="userList">
       <DataGrid
         rows={data}
+        getRowId={(row) => row._id}
         disableSelectionOnClick
         columns={columns}
         pageSize={8}

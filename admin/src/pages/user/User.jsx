@@ -9,7 +9,60 @@ import {
 import { Link } from "react-router-dom";
 import "./user.css";
 
+import { useState } from "react";
+
+import { updateUser } from '../../redux/apiCalls';
+//import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+//import app from "../../firebase";
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from "react-router-dom";
+//import User from './User';
+
+
 export default function User() {
+
+  const location = useLocation()
+  const dispatch = useDispatch()
+  const userId = location.pathname.split("/")[2];
+  const [ file, setFile] = useState([]);
+  const [ inputs, setInputs] = useState({});
+
+
+
+  const user = useSelector((state)=> state?.userList?.currentUser?.find((user) => user._id === userId)
+
+  );
+  console.log(user, "user");
+
+  const randomImg = 'https://media.istockphoto.com/id/1131164548/vector/avatar-5.jpg?s=612x612&w=0&k=20&c=CK49ShLJwDxE4kiroCR42kimTuuhvuo2FH5y_6aSgEo='
+
+  const handleChange = (e) => { 
+      setInputs((prev) => {
+        return {...prev, [e.target.name]: e.target.value };
+      })
+     }
+
+
+
+     const handleClick = (e) => {
+      e.preventDefault()
+      
+      const user = {_id: userId, ...inputs,};
+           if (user !== {}) {
+             updateUser(userId,user, dispatch)
+             setTimeout(()=>{
+               window.location.pathname = '/users'
+    
+             },400)
+           } 
+      
+     }
+      
+  
+  
+
+
+
   return (
     <div className="user">
       <div className="userTitleContainer">
@@ -22,38 +75,31 @@ export default function User() {
         <div className="userShow">
           <div className="userShowTop">
             <img
-              src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+              src={user.img || randomImg}
               alt=""
               className="userShowImg"
             />
             <div className="userShowTopTitle">
-              <span className="userShowUsername">Anna Becker</span>
-              <span className="userShowUserTitle">Software Engineer</span>
+              <span className="userShowUsername">{user.username}</span>
+  
             </div>
           </div>
           <div className="userShowBottom">
-            <span className="userShowTitle">Account Details</span>
+            <span className="userShowTitle">id: {user._id}</span>
             <div className="userShowInfo">
               <PermIdentity className="userShowIcon" />
               <span className="userShowInfoTitle">annabeck99</span>
             </div>
             <div className="userShowInfo">
               <CalendarToday className="userShowIcon" />
-              <span className="userShowInfoTitle">10.12.1999</span>
+              <span className="userShowInfoTitle">{user.email}</span>
             </div>
-            <span className="userShowTitle">Contact Details</span>
+            <span className="userShowTitle">{user.isAdmin}</span>
             <div className="userShowInfo">
               <PhoneAndroid className="userShowIcon" />
               <span className="userShowInfoTitle">+1 123 456 67</span>
             </div>
-            <div className="userShowInfo">
-              <MailOutline className="userShowIcon" />
-              <span className="userShowInfoTitle">annabeck99@gmail.com</span>
-            </div>
-            <div className="userShowInfo">
-              <LocationSearching className="userShowIcon" />
-              <span className="userShowInfoTitle">New York | USA</span>
-            </div>
+           
           </div>
         </div>
         <div className="userUpdate">
@@ -64,17 +110,18 @@ export default function User() {
                 <label>Username</label>
                 <input
                   type="text"
-                  placeholder="annabeck99"
+                  placeholder={user.username}
                   className="userUpdateInput"
+                  onChange={handleChange}
+                  name='username'
                 />
               </div>
               <div className="userUpdateItem">
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  placeholder="Anna Becker"
-                  className="userUpdateInput"
-                />
+                <label htmlFor="">Admin?</label>
+               <select name="isAdmin">
+                <option value="true">true</option>
+                <option value="false">false</option>
+               </select>
               </div>
               <div className="userUpdateItem">
                 <label>Email</label>
@@ -105,15 +152,11 @@ export default function User() {
               <div className="userUpdateUpload">
                 <img
                   className="userUpdateImg"
-                  src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                  src={user.img || randomImg}
                   alt=""
                 />
-                <label htmlFor="file">
-                  <Publish className="userUpdateIcon" />
-                </label>
-                <input type="file" id="file" style={{ display: "none" }} />
               </div>
-              <button className="userUpdateButton">Update</button>
+              <button  onClick={handleClick} className="userUpdateButton">Update</button>
             </div>
           </form>
         </div>

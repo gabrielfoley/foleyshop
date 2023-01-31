@@ -1,5 +1,10 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { useDispatch } from 'react-redux';
+import { useState } from "react";
+import { signupFailure, signupStart, signupSuccess } from "../redux/userRedux";
+import { publicRequest } from '../requestMethods';
+import { validate } from "../Validate";
 
 const Container = styled.div`
   width: 100vw;
@@ -54,23 +59,69 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const Error = styled.span`
+color: red;
+`
+
+
+
+
 const Register = () => {
+  const initialValues= {
+    username:'',
+    email:'',
+    password:'',
+  }
+const [formValues, setFormValues] = useState(initialValues)
+const [formErrors, setFormErrors] = useState({})
+const [isSubmit, setIsSubmit] = useState(false)
+  //const [ inputs, setInputs] = useState({});
+  const [error, setError] = useState(false)
+  const dispatch = useDispatch()
+
+const handleChange = (e) => { 
+const {name , value} = e.target;
+setFormValues({...formValues, [name]:value})
+ }
+
+ const handleClick = async(e) => {
+e.preventDefault()
+setFormErrors(validate(formValues))
+setIsSubmit(true)
+
+if (isSubmit === true) {
+  dispatch(signupStart())
+  try {
+    const res = await publicRequest.post("/auth/register", formValues);
+    dispatch(signupSuccess(res.data));
+    setError(false)
+    
+  } catch (error) {
+    dispatch(signupFailure())
+    setError(true)
+  }
+}
+ }
+
+
   return (
     <Container>
       <Wrapper>
         <Title>CREATE AN ACCOUNT</Title>
-        <Form>
-          <Input placeholder="name" />
-          <Input placeholder="last name" />
-          <Input placeholder="username" />
-          <Input placeholder="email" />
-          <Input placeholder="password" />
-          <Input placeholder="confirm password" />
+        <Form>  
+          <Input value={formValues.username} type='text' name="username" placeholder="username" required onChange={handleChange}/>
+          <Error>{formErrors.username}</Error>
+          
+          <Input value={formValues.email} type='email' name="email" placeholder="email" required onChange={handleChange}/>
+          <Error>{formErrors.email}</Error>
+          <Input value={formValues.password}  name="password" placeholder="password" required onChange={handleChange}/>
+          <Error>{formErrors.password}</Error>
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button>CREATE</Button>
+          <Button onClick={handleClick}>CREATE</Button>
+          { error && <Error>Invalid Details!</Error>}
         </Form>
       </Wrapper>
     </Container>

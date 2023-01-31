@@ -4,11 +4,13 @@ import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react"
 import StripeCheckout from "react-stripe-checkout";
 import { userRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom";
+import { resetCart } from "../redux/cartRedux";
+import { Link } from "react-router-dom";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -164,9 +166,12 @@ const Cart = () => {
   const cart = useSelector(state=>state.cart);
   const[stripeToken,setStripeToken] = useState(null);
   const history = useNavigate();
+  const dispatch = useDispatch()
+  
 
 
   const onToken = (token)=>{
+   
     setStripeToken(token);
   };
   useEffect(()=>{
@@ -182,6 +187,10 @@ const Cart = () => {
     stripeToken && makeRequest();
   },[stripeToken, cart.total, history]);
 
+  const handleSuccess = () =>{
+    history('/success')
+  }
+
   return (
     <Container>
       <Navbar />
@@ -189,12 +198,15 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
+          <Link to="/">
           <TopButton>CONTINUE SHOPPING</TopButton>
+          </Link>
           <TopTexts>
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist (0)</TopText>
           </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
+          <TopButton onClick={()=> dispatch(resetCart())} type="filled">Clear Cart</TopButton>
+          <TopButton onClick={handleSuccess} type="filled">CHECKOUT NOW</TopButton>
         </Top>
         <Bottom>
           <Info>
