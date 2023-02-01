@@ -9,6 +9,12 @@ import {
 } from "@material-ui/icons";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+
+
+
 
 const Container = styled.div`
   display: flex;
@@ -52,6 +58,7 @@ const Center = styled.div`
 
 const Title = styled.h3`
   margin-bottom: 30px;
+  text-align: right;
 `;
 
 const List = styled.ul`
@@ -86,7 +93,9 @@ const Payment = styled.img`
 
 const Footer = () => {
   return (
+    
     <Container>
+      
       <Left>
         <Logo>The Foley Shop</Logo>
         <Desc>
@@ -111,6 +120,34 @@ const Footer = () => {
       </Left>
       <Center>
         <Title>Useful Links</Title>
+
+        <Stack width="100%" spacing={1} direction="column" >
+      <Button component={Link} to="/" variant="text">Home</Button>
+      <Button component={Link} to="/cart"variant="text">Cart</Button>
+      <Button component={Link} to="/login"variant="text">My Account</Button>
+      </Stack>
+      </Center>
+      <Center>
+        <Stack width="100%"  spacing={1} direction="column">
+          <Title> </Title>
+          <Title> </Title>
+          <Title> </Title>
+      <Button component={Link} to="/"variant="text">Man's Fashion</Button>
+      <Button component={Link} to="/"variant="text">Woman's Fashion</Button>
+      </Stack>
+      </Center>
+      
+      
+      
+      
+      
+     
+   
+        
+        
+        
+        
+        {/*
         <List>
           <ListItem>Home</ListItem>
           <ListItem>Cart</ListItem>
@@ -122,8 +159,11 @@ const Footer = () => {
           <ListItem>Wishlist</ListItem>
           <ListItem>Wishlist</ListItem>
           <ListItem>Terms</ListItem>
-        </List>
-      </Center>
+          </List>
+  */ }
+          
+        
+    
       <Right>
         <Title>Contact</Title>
         <ContactItem>

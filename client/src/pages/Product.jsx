@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import { mobile } from "../responsive";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
@@ -121,6 +121,19 @@ const Button = styled.button`
   }
 `;
 
+const ContShopButton = styled.button`
+  padding: 15px;
+  border: 2px solid teal;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover{
+      background-color: #f8f4f4;
+  }
+`;
+
+
 const Product = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
@@ -164,6 +177,9 @@ const handleClick = ()=>{
           <Image src={product.img} />
         </ImgContainer>
         <InfoContainer>
+          <Link to="/products">
+        <ContShopButton>CONTINUE SHIPPING</ContShopButton>
+        </Link>
           <Title>{product.title}</Title>
           <Desc>
             {product.desc}
@@ -192,9 +208,13 @@ const handleClick = ()=>{
               <Add onClick={()=>handleQuantity("inc")}/>
             </AmountContainer>
             <Button onClick={handleClick}>ADD TO CART</Button>
+            
           </AddContainer>
+      
         </InfoContainer>
+        
       </Wrapper>
+      
       <Newsletter />
       <Footer />
     </Container>

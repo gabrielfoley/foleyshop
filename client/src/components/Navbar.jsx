@@ -93,7 +93,9 @@ window.location = "/"
           <Logo>The Foley Shop</Logo>
         </Center>
         <Right>
-        
+        {
+        //{ user && <Link to="/"><MenuItem>CONTINUE SHOPPING</MenuItem></Link>}
+        }
         { user && <MenuItem onClick={handleClick}>LOGOUT</MenuItem>}
         { !user && <Link to="/register">
         <MenuItem>REGISTER</MenuItem>
